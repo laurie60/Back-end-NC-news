@@ -7,6 +7,6 @@ exports.getTopics = (req, res) => {
 
   fetchTopics().then((responses) => {
     //console.log(treasures.length);
-    res.status(200).send(responses);
+    res.status(200).send({ topics: responses });
   });
 };
