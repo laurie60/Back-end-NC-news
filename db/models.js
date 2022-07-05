@@ -22,4 +22,13 @@ exports.fetchArticleById = (articleId) => {
     });
 };
 
-//exports.alterVotes();
+exports.alterVotes = (articleId, inc_votes) => {
+  const queryStr =
+    "UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;";
+  const variables = [inc_votes, articleId];
+  console.log(variables);
+  return db.query(queryStr, variables).then(({ rows }) => {
+    const updatedArticle = rows[0];
+    return updatedArticle;
+  });
+};
