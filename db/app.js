@@ -1,13 +1,16 @@
 const express = require("express");
 const { getTopics, getArticleById, getUsers } = require("./controller");
+const { getTopics, getArticleById, updateVotes } = require("./controller");
 
 const app = express();
 
-//app.use(express.json());
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:articleId", getArticleById);
+
+app.patch("/api/articles/:articleId", updateVotes);
 
 app.get("/api/users", getUsers);
 
@@ -19,7 +22,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || err.msg === "invalid input type") {
     res.status(400).send({ msg: "invalid input type" });
   } else next(err);
 });
