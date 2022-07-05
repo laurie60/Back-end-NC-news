@@ -76,25 +76,25 @@ describe("News Express App", () => {
         });
     });
   });
-  describe("PATCH /api/articles/:article_id", () => {
-    test("Should alter votes of secified article by given amount", () => {
-      const changeVotes = { inc_votes: -100 };
-      return request(app)
-        .patch("/api/articles/1")
-        .send(changeVotes)
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.article).toEqual(
-            expect.objectContaining({
-              title: "Living in the shadow of a great man",
-              topic: "mitch",
-              author: "butter_bridge",
-              body: "I find this existence challenging",
-              votes: 0,
-              article_id: 1,
-            })
-          );
-        });
-    });
-  });
+  // describe("PATCH /api/articles/:article_id", () => {
+  //   test("Should alter votes of secified article by given amount", () => {
+  //     const changeVotes = { inc_votes: -100 };
+  //     return request(app)
+  //       .patch("/api/articles/1")
+  //       .send(changeVotes)
+  //       .expect(200)
+  //       .then(({ body }) => {
+  //         expect(body.article).toEqual(
+  //           expect.objectContaining({
+  //             title: "Living in the shadow of a great man",
+  //             topic: "mitch",
+  //             author: "butter_bridge",
+  //             body: "I find this existence challenging",
+  //             votes: 0,
+  //             article_id: 1,
+  //           })
+  //         );
+  //       });
+  //   });
+  // });
 });
