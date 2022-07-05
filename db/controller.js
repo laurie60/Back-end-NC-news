@@ -19,18 +19,15 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.updateVotes = (req, res, next) => {
-  console.log(req.body);
-  //console.log(!req.body.inc_votes, "<<<<<<<<!req.body.inc_votes");
+  const { inc_votes } = req.body;
+  const { articleId } = req.params;
 
-  if (!req.body.inc_votes) {
+  if (!req.body.inc_votes && req.body.inc_votes !== 0) {
     next({ msg: "invalid input type" });
   } else {
-    const { inc_votes } = req.body;
-    const { articleId } = req.params;
-
     alterVotes(articleId, inc_votes)
-      .then((alteredArticle) => {
-        res.status(200).send({ alteredArticle });
+      .then((article) => {
+        res.status(200).send({ article });
       })
       .catch(next);
   }

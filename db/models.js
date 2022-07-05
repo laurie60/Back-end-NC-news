@@ -28,7 +28,7 @@ exports.alterVotes = (articleId, inc_votes) => {
   const variables = [inc_votes, articleId];
   console.log(variables);
   return db.query(queryStr, variables).then(({ rows }) => {
-    const updatedArticle = rows[0];
-    return updatedArticle;
+    const article = rows[0];
+    return article;
   });
 };

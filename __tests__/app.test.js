@@ -40,7 +40,6 @@ describe("News Express App", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({ body }) => {
-          console.log(body.article, "<<<<body.article in test");
           expect(body.article).toEqual(
             expect.objectContaining({
               title: "Living in the shadow of a great man",
@@ -84,8 +83,7 @@ describe("News Express App", () => {
         .send(changeVotes)
         .expect(200)
         .then(({ body }) => {
-          console.log(body, "<<<in test");
-          expect(body.alteredArticle).toEqual(
+          expect(body.article).toEqual(
             expect.objectContaining({
               title: "Living in the shadow of a great man",
               topic: "mitch",
@@ -97,6 +95,26 @@ describe("News Express App", () => {
           );
         });
     });
+    test("Should not alter votes of secified article if inc_votes is given value 0", () => {
+      const changeVotes = { inc_votes: 0 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(changeVotes)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toEqual(
+            expect.objectContaining({
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              votes: 100,
+              article_id: 1,
+            })
+          );
+        });
+    });
+
     test("if no inc votes is given on the request body, throw error", () => {
       const changeVotes = {};
       return request(app)
@@ -104,7 +122,6 @@ describe("News Express App", () => {
         .send(changeVotes)
         .expect(400)
         .then(({ body }) => {
-          console.log(body, "<<<in test");
           expect(body).toEqual({
             msg: "invalid input type",
           });
