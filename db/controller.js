@@ -1,4 +1,4 @@
-const { fetchTopics } = require("./models");
+const { fetchTopics, fetchArticleById } = require("./models");
 
 const { req, res } = require("./app");
 
@@ -9,4 +9,14 @@ exports.getTopics = (req, res) => {
     //console.log(treasures.length);
     res.status(200).send({ topics: responses });
   });
+};
+
+exports.getArticleById = (req, res, next) => {
+  const { articleId } = req.params;
+
+  fetchArticleById(articleId)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
