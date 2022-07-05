@@ -76,25 +76,30 @@ describe("News Express App", () => {
         });
     });
   });
-  // describe("PATCH /api/articles/:article_id", () => {
-  //   test("Should alter votes of secified article by given amount", () => {
-  //     const changeVotes = { inc_votes: -100 };
-  //     return request(app)
-  //       .patch("/api/articles/1")
-  //       .send(changeVotes)
-  //       .expect(200)
-  //       .then(({ body }) => {
-  //         expect(body.article).toEqual(
-  //           expect.objectContaining({
-  //             title: "Living in the shadow of a great man",
-  //             topic: "mitch",
-  //             author: "butter_bridge",
-  //             body: "I find this existence challenging",
-  //             votes: 0,
-  //             article_id: 1,
-  //           })
-  //         );
-  //       });
-  //   });
-  // });
+
+  describe("GET api/users", () => {
+    test("200: responds with array of user objects, each of which have URL, username and name properties ", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users).toHaveLength(4);
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
+          });
+        });
+    });
+    test("404: responds with a message when article ID of invalid number endpoint requested ", () => {
+      return request(app)
+        .get("/api/userz")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            message: "404: endpoint does not exist",
+          });
+        });
+    });
+  });
 });

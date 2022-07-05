@@ -1,5 +1,5 @@
 const express = require("express");
-const { getTopics, getArticleById } = require("./controller");
+const { getTopics, getArticleById, getUsers } = require("./controller");
 
 const app = express();
 
@@ -8,6 +8,8 @@ const app = express();
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:articleId", getArticleById);
+
+app.get("/api/users", getUsers);
 
 app.use((err, req, res, next) => {
   // handle custom errors
