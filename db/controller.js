@@ -20,3 +20,10 @@ exports.getArticleById = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.updateVotes = (req, res) => {
+  console.log(req.body);
+  alterVotes(req.body).then((alteredArticle) => {
+    res.send(200).send({ alteredArticle }).catch(next);
+  });
+};

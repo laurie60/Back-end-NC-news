@@ -19,8 +19,7 @@ exports.fetchArticleById = (articleId) => {
         });
       }
       return article;
-    })
-    .catch((err) => {
-      return Promise.reject(err);
     });
 };
+
+//exports.alterVotes();
