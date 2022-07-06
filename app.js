@@ -1,5 +1,10 @@
 const express = require("express");
-const { getTopics, getArticleById, updateVotes } = require("./controller");
+const {
+  getTopics,
+  getArticleById,
+  updateVotes,
+  getUsers,
+} = require("./controller");
 
 const app = express();
 
@@ -10,6 +15,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:articleId", getArticleById);
 
 app.patch("/api/articles/:articleId", updateVotes);
+
+app.get("/api/users", getUsers);
 
 app.use((err, req, res, next) => {
   // handle custom errors
@@ -25,12 +32,10 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: "Internal Servers Error" });
 });
 
 app.use("*", (request, response) => {
-  console.log("404");
   response.status(404).send({ message: "404: endpoint does not exist" });
 });
 

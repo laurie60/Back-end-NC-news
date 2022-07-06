@@ -2,7 +2,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
 const request = require("supertest");
-const app = require("../db/app");
+const app = require("../app");
 const sorted = require("jest-sorted");
 
 beforeEach(() => seed(testData));
@@ -53,7 +53,7 @@ describe("News Express App", () => {
         });
     });
 
-    test("404: responds with a message when non-existant article id is requested ", () => {
+    test("400: responds with a message when non-existant article id is requested ", () => {
       return request(app)
         .get("/api/articles/3000")
         .expect(404)
@@ -75,79 +75,28 @@ describe("News Express App", () => {
         });
     });
   });
-  describe("PATCH /api/articles/:article_id", () => {
-    test("Should alter votes of secified article by given amount", () => {
-      const changeVotes = { inc_votes: -100 };
-      return request(app)
-        .patch("/api/articles/1")
-        .send(changeVotes)
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.article).toEqual(
-            expect.objectContaining({
-              title: "Living in the shadow of a great man",
-              topic: "mitch",
-              author: "butter_bridge",
-              body: "I find this existence challenging",
-              votes: 0,
-              article_id: 1,
-            })
-          );
-        });
-    });
-    test("Should not alter votes of secified article if inc_votes is given value 0", () => {
-      const changeVotes = { inc_votes: 0 };
-      return request(app)
-        .patch("/api/articles/1")
-        .send(changeVotes)
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.article).toEqual(
-            expect.objectContaining({
-              title: "Living in the shadow of a great man",
-              topic: "mitch",
-              author: "butter_bridge",
-              body: "I find this existence challenging",
-              votes: 100,
-              article_id: 1,
-            })
-          );
-        });
-    });
 
-    test("if no inc votes is given on the request body, throw error", () => {
-      const changeVotes = {};
+  describe("GET api/users", () => {
+    test("200: responds with array of user objects, each of which have URL, username and name properties ", () => {
       return request(app)
-        .patch("/api/articles/1")
-        .send(changeVotes)
-        .expect(400)
+        .get("/api/users")
+        .expect(200)
         .then(({ body }) => {
-          expect(body).toEqual({
-            msg: "invalid input type",
+          expect(body.users).toHaveLength(4);
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
           });
         });
     });
-    test("400: responds with appropriate message when non integer value of inc_votes is given ", () => {
-      const changeVotes = { inc_votes: "potato" };
+    test("404: responds with a message when article ID of invalid number endpoint requested ", () => {
       return request(app)
-        .patch("/api/articles/1")
-        .send(changeVotes)
-        .expect(400)
+        .get("/api/userz")
+        .expect(404)
         .then(({ body }) => {
           expect(body).toEqual({
-            msg: "invalid input type",
-          });
-        });
-    });
-    test("400: responds with appropriate message when no there is no inc_votes key in the request parameter", () => {
-      const changeVotes = { zinc_votes: 80 };
-      return request(app)
-        .patch("/api/articles/1")
-        .send(changeVotes)
-        .expect(400)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            msg: "invalid input type",
+            message: "404: endpoint does not exist",
           });
         });
     });

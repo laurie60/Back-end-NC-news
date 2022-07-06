@@ -1,4 +1,9 @@
-const { fetchTopics, fetchArticleById, alterVotes } = require("./models");
+const {
+  fetchTopics,
+  fetchArticleById,
+  alterVotes,
+  fetchUsers,
+} = require("./models");
 
 const { req, res } = require("./app");
 
@@ -31,4 +36,10 @@ exports.updateVotes = (req, res, next) => {
       })
       .catch(next);
   }
+};
+
+exports.getUsers = (req, res) => {
+  fetchUsers().then((users) => {
+    res.status(200).send({ users });
+  });
 };
