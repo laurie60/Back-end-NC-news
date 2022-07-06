@@ -40,7 +40,6 @@ exports.updateVotes = (req, res, next) => {
 
 exports.getUsers = (req, res) => {
   fetchUsers().then((users) => {
-    console.log(users, "Users in Controllers");
     res.status(200).send({ users });
   });
 };
