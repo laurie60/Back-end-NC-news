@@ -6,7 +6,7 @@ const app = require("../app");
 const sorted = require("jest-sorted");
 
 beforeEach(() => seed(testData));
-afterAll(() => db.end);
+afterAll(() => db.end());
 
 describe("News Express App", () => {
   describe("GET api/topics", () => {
@@ -53,7 +53,7 @@ describe("News Express App", () => {
         });
     });
 
-    test("400: responds with a message when non-existant article id is requested ", () => {
+    test("404: responds with a message when non-existant article id is requested ", () => {
       return request(app)
         .get("/api/articles/3000")
         .expect(404)
@@ -75,85 +75,84 @@ describe("News Express App", () => {
         });
     });
   });
-  
-    describe("PATCH /api/articles/:article_id", () => {
-     test("Should alter votes of secified article by given amount", () => {
-       const changeVotes = { inc_votes: -100 };
-       return request(app)
-         .patch("/api/articles/1")
-         .send(changeVotes)
-         .expect(200)
-         .then(({ body }) => {
-           expect(body.article).toEqual(
-             expect.objectContaining({
-               title: "Living in the shadow of a great man",
-               topic: "mitch",
-               author: "butter_bridge",
-               body: "I find this existence challenging",
-               votes: 0,
-               article_id: 1,
-             })
-           );
-         });
-     });
-     test("Should not alter votes of secified article if inc_votes is given value 0", () => {
-       const changeVotes = { inc_votes: 0 };
-       return request(app)
-         .patch("/api/articles/1")
-         .send(changeVotes)
-         .expect(200)
-         .then(({ body }) => {
-           expect(body.article).toEqual(
-             expect.objectContaining({
-               title: "Living in the shadow of a great man",
-               topic: "mitch",
-               author: "butter_bridge",
-               body: "I find this existence challenging",
-               votes: 100,
-               article_id: 1,
-             })
-           );
-         });
-     });
 
-     test("if no inc votes is given on the request body, throw error", () => {
-       const changeVotes = {};
-       return request(app)
-         .patch("/api/articles/1")
-         .send(changeVotes)
-         .expect(400)
-         .then(({ body }) => {
-           expect(body).toEqual({
-             msg: "invalid input type",
-           });
-         });
-     });
-     test("400: responds with appropriate message when non integer value of inc_votes is given ", () => {
-       const changeVotes = { inc_votes: "potato" };
-       return request(app)
-         .patch("/api/articles/1")
-         .send(changeVotes)
-         .expect(400)
-         .then(({ body }) => {
-           expect(body).toEqual({
-             msg: "invalid input type",
-           });
-         });
-     });
-     test("400: responds with appropriate message when no there is no inc_votes key in the request parameter", () => {
-       const changeVotes = { zinc_votes: 80 };
-       return request(app)
-         .patch("/api/articles/1")
-         .send(changeVotes)
-         .expect(400)
-         .then(({ body }) => {
-           expect(body).toEqual({
-             msg: "invalid input type",
-           });
-         });
-     });
-   });
-  
+  describe("PATCH /api/articles/:article_id", () => {
+    test("Should alter votes of secified article by given amount", () => {
+      const changeVotes = { inc_votes: -100 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(changeVotes)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toEqual(
+            expect.objectContaining({
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              votes: 0,
+              article_id: 1,
+            })
+          );
+        });
+    });
+    test("Should not alter votes of secified article if inc_votes is given value 0", () => {
+      const changeVotes = { inc_votes: 0 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(changeVotes)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toEqual(
+            expect.objectContaining({
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              votes: 100,
+              article_id: 1,
+            })
+          );
+        });
+    });
+
+    test("if no inc votes is given on the request body, throw error", () => {
+      const changeVotes = {};
+      return request(app)
+        .patch("/api/articles/1")
+        .send(changeVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "invalid input type",
+          });
+        });
+    });
+    test("400: responds with appropriate message when non integer value of inc_votes is given ", () => {
+      const changeVotes = { inc_votes: "potato" };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(changeVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "invalid input type",
+          });
+        });
+    });
+    test("400: responds with appropriate message when no there is no inc_votes key in the request parameter", () => {
+      const changeVotes = { zinc_votes: 80 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(changeVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "invalid input type",
+          });
+        });
+    });
+  });
 
   describe("GET api/users", () => {
     test("200: responds with array of user objects, each of which have URL, username and name properties ", () => {
@@ -181,5 +180,3 @@ describe("News Express App", () => {
     });
   });
 });
-
-
