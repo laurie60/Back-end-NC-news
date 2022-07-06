@@ -35,7 +35,7 @@ describe("News Express App", () => {
   });
 
   describe("GET /api/articles/:article_id", () => {
-    test("200: responds with array containing object of specified article,  ", () => {
+    test("200: responds with array containing object of specified article, and the number of comments that are associated with the article id  ", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -48,7 +48,7 @@ describe("News Express App", () => {
               body: "I find this existence challenging",
               votes: 100,
               article_id: 1,
-              comment_count: "11",
+              comment_count: 11,
             })
           );
         });
