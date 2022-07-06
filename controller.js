@@ -3,6 +3,7 @@ const {
   fetchArticleById,
   alterVotes,
   fetchUsers,
+  fetchArticles,
 } = require("./models");
 
 const { req, res } = require("./app");
@@ -41,5 +42,11 @@ exports.updateVotes = (req, res, next) => {
 exports.getUsers = (req, res) => {
   fetchUsers().then((users) => {
     res.status(200).send({ users });
+  });
+};
+
+exports.getArticles = (req, res) => {
+  fetchArticles().then((articles) => {
+    res.status(200).send({ articles });
   });
 };

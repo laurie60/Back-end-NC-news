@@ -180,4 +180,24 @@ describe("News Express App", () => {
         });
     });
   });
+  describe.only("GET api/articles", () => {
+    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count ", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body, "<<<<<<in test");
+          expect(body.articles).toBeSortedBy("created_at");
+          expect(body.articles).toHaveLength(12);
+          body.articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("comment_count");
+          });
+        });
+    });
+  });
 });
