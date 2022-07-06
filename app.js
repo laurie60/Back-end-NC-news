@@ -4,6 +4,7 @@ const {
   getArticleById,
   updateVotes,
   getUsers,
+  getArticles,
 } = require("./controller");
 
 const app = express();
@@ -17,6 +18,8 @@ app.get("/api/articles/:articleId", getArticleById);
 app.patch("/api/articles/:articleId", updateVotes);
 
 app.get("/api/users", getUsers);
+
+app.get("/api/articles", getArticles);
 
 app.use((err, req, res, next) => {
   // handle custom errors
