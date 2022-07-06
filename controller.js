@@ -1,5 +1,9 @@
-const { fetchTopics, fetchArticleById, fetchUsers } = require("./models");
-const { fetchTopics, fetchArticleById, alterVotes } = require("./models");
+const {
+  fetchTopics,
+  fetchArticleById,
+  alterVotes,
+  fetchUsers,
+} = require("./models");
 
 const { req, res } = require("./app");
 

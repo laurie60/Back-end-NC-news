@@ -1,8 +1,8 @@
 const seed = require("../db/seeds/seed");
-const testData = require("../db/data/test-data");
+const testData = require("../test-data");
 const db = require("../db/connection");
 const request = require("supertest");
-const app = require("../db/app");
+const app = require("../app");
 const sorted = require("jest-sorted");
 
 beforeEach(() => seed(testData));
@@ -40,7 +40,6 @@ describe("News Express App", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({ body }) => {
-          console.log(body.article, "<<<<body.article in test");
           expect(body.article).toEqual(
             expect.objectContaining({
               title: "Living in the shadow of a great man",
