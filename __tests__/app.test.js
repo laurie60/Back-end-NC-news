@@ -181,13 +181,15 @@ describe("News Express App", () => {
     });
   });
   describe.only("GET api/articles", () => {
-    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count ", () => {
+    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
           console.log(body, "<<<<<<in test");
-          expect(body.articles).toBeSortedBy("created_at");
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
           expect(body.articles).toHaveLength(12);
           body.articles.forEach((article) => {
             expect(article).toHaveProperty("author");
