@@ -53,7 +53,7 @@ describe("News Express App", () => {
         });
     });
 
-    test("404: responds with a message when non-existant article id is requested ", () => {
+    test("400: responds with a message when non-existant article id is requested ", () => {
       return request(app)
         .get("/api/articles/3000")
         .expect(404)
@@ -71,32 +71,6 @@ describe("News Express App", () => {
         .then(({ body }) => {
           expect(body).toEqual({
             msg: "invalid input type",
-          });
-        });
-    });
-  });
-
-  describe("GET api/users", () => {
-    test("200: responds with array of user objects, each of which have URL, username and name properties ", () => {
-      return request(app)
-        .get("/api/users")
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.users).toHaveLength(4);
-          body.users.forEach((user) => {
-            expect(user).toHaveProperty("username");
-            expect(user).toHaveProperty("name");
-            expect(user).toHaveProperty("avatar_url");
-          });
-        });
-    });
-    test("404: responds with a message when article ID of invalid number endpoint requested ", () => {
-      return request(app)
-        .get("/api/userz")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            message: "404: endpoint does not exist",
           });
         });
     });
