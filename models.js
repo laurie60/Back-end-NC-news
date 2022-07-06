@@ -14,7 +14,7 @@ exports.fetchArticleById = (articleId) => {
       const article = rows[0];
       if (!article) {
         return Promise.reject({
-          status: 400,
+          status: 404,
           msg: `No article found with article ID: ${articleId}`,
         });
       }
