@@ -1,3 +1,5 @@
 node_modules
 .env.*
 .OrigionalReadme.md
+sqlfiddle.sql
+sqlfiddleoutput.txt
