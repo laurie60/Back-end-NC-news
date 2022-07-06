@@ -180,7 +180,7 @@ describe("News Express App", () => {
         });
     });
   });
-  describe.only("GET api/articles", () => {
+  describe("GET api/articles", () => {
     test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
       return request(app)
         .get("/api/articles")
@@ -199,6 +199,43 @@ describe("News Express App", () => {
             expect(article).toHaveProperty("created_at");
             expect(article).toHaveProperty("comment_count");
           });
+        });
+    });
+  });
+  describe.only("GET /api/articles/:article_id/comments", () => {
+    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body.comments, "<<<<<<in test");
+
+          expect(body.comments).toHaveLength(11);
+          body.comments.forEach((comment) => {
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("body");
+          });
+        });
+    });
+    test("Returns 404 if there is no article_id corresponding to the one requested", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "No article found with article ID: 1000",
+          });
+        });
+    });
+    test("Returns 200 with empty comments array if passed an article ID which has no comments associated with it", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toEqual([]);
         });
     });
   });

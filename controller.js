@@ -4,6 +4,7 @@ const {
   alterVotes,
   fetchUsers,
   fetchArticles,
+  fetchArticleComments,
 } = require("./models");
 
 const { req, res } = require("./app");
@@ -49,4 +50,19 @@ exports.getArticles = (req, res) => {
   fetchArticles().then((articles) => {
     res.status(200).send({ articles });
   });
+};
+
+exports.getArticles = (req, res) => {
+  fetchArticles().then((articles) => {
+    res.status(200).send({ articles });
+  });
+};
+
+exports.getArticleComments = (req, res, next) => {
+  const { articleId } = req.params;
+  fetchArticleComments(articleId)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
 };

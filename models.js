@@ -59,14 +59,46 @@ ORDER BY created_at DESC;`
 
   console.log(commentCountArr.rows, "<<<<<<< in models");
 
-  // const articleCount = commentCountArr.rows[0];
+  return commentCountArr.rows;
+};
 
-  // if (!articleCount) {
-  //   return Promise.reject({
-  //     status: 404,
-  //     msg: `No article found with article ID: ${articleId}`,
-  //   });
-  // }
+exports.fetchArticles = async () => {
+  const commentCountArr = await db.query(
+    `SELECT articles.*, COUNT(comments.article_id) 
+::INT AS comment_count 
+FROM articles 
+LEFT JOIN comments 
+ON articles.article_id = comments.article_id 
+GROUP BY articles.article_id
+ORDER BY created_at DESC;`
+  );
+
+  console.log(commentCountArr.rows, "<<<<<<< in models");
 
   return commentCountArr.rows;
+};
+
+exports.fetchArticleComments = async (articleId) => {
+  const articleCheck = await db.query(
+    `SELECT * FROM articles where article_id = $1;`,
+    [articleId]
+  );
+  console.log(articleCheck);
+  if (articleCheck.rowCount === 0) {
+    return Promise.reject({
+      status: 404,
+      msg: `No article found with article ID: ${articleId}`,
+    });
+  }
+
+  const articleComments = await db.query(
+    `SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body
+FROM comments
+LEFT JOIN articles 
+ON articles.article_id = comments.article_id 
+WHERE articles.article_id = $1;`,
+    [articleId]
+  );
+
+  return articleComments.rows;
 };
