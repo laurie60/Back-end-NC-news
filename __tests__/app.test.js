@@ -22,7 +22,7 @@ describe("News Express App", () => {
           });
         });
     });
-    test("404: responds with a message when article ID of invalid number endpoint requested ", () => {
+    test("404: responds with a message when article ID of invalid endpoint requested ", () => {
       return request(app)
         .get("/ipa")
         .expect(404)
@@ -48,6 +48,7 @@ describe("News Express App", () => {
               body: "I find this existence challenging",
               votes: 100,
               article_id: 1,
+              comment_count: "11",
             })
           );
         });
