@@ -57,8 +57,6 @@ GROUP BY articles.article_id
 ORDER BY created_at DESC;`
   );
 
-  console.log(commentCountArr.rows, "<<<<<<< in models");
-
   return commentCountArr.rows;
 };
 
@@ -73,8 +71,6 @@ GROUP BY articles.article_id
 ORDER BY created_at DESC;`
   );
 
-  console.log(commentCountArr.rows, "<<<<<<< in models");
-
   return commentCountArr.rows;
 };
 
@@ -83,7 +79,6 @@ exports.fetchArticleComments = async (articleId) => {
     `SELECT * FROM articles where article_id = $1;`,
     [articleId]
   );
-  console.log(articleCheck);
   if (articleCheck.rowCount === 0) {
     return Promise.reject({
       status: 404,
