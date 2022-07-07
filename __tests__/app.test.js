@@ -202,8 +202,8 @@ describe("News Express App", () => {
         });
     });
   });
-  describe.only("GET /api/articles/:article_id/comments", () => {
-    test("200: responds with array of comment objects, each of which have comment_id, votes, created_at, author, and body properties", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("200: responds with array of comment objects, each of which have comment_id, votes, created_at, author, article_id and body properties", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -217,6 +217,7 @@ describe("News Express App", () => {
             expect(comment).toHaveProperty("created_at");
             expect(comment).toHaveProperty("author");
             expect(comment).toHaveProperty("body");
+            expect(comment.article_id).toBe(1);
           });
         });
     });
