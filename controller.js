@@ -53,12 +53,6 @@ exports.getArticles = (req, res) => {
   });
 };
 
-// exports.getArticles = (req, res, next) => {
-//   fetchArticles().then((articles) => {
-//     res.status(200).send({ articles });
-//   });
-// };
-
 exports.getArticleComments = (req, res, next) => {
   const { articleId } = req.params;
   fetchArticleComments(articleId)
