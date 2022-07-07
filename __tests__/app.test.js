@@ -202,7 +202,7 @@ describe("News Express App", () => {
         });
     });
   });
-  describe.only("GET /api/articles/:article_id/comments", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
     test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
       return request(app)
         .get("/api/articles/1/comments")
@@ -236,6 +236,47 @@ describe("News Express App", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).toEqual([]);
+        });
+    });
+  });
+  describe("POST /api/articles/:article_id/comments", () => {
+    test.only("201: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+      const comment = { icellusedkars: "Wagon Wheels" };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(201)
+        .then(({ body }) => {
+          console.log(body, "<<<<<<in test");
+
+          expect(body.comments).toEqual;
+        });
+    });
+    test.only("404: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+      const comment = { icellusedkars: "Wagon Wheels" };
+
+      return request(app)
+        .post("/api/articles/188/comments")
+        .send(comment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "No article found with article ID: 188",
+          });
+        });
+    });
+    test.only("404: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+      const comment = { questioningmyexistance: "Wagon Wheels" };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: `No user found with username: questioningmyexistance`,
+          });
         });
     });
   });

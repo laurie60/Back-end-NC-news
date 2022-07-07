@@ -5,6 +5,7 @@ const {
   fetchUsers,
   fetchArticles,
   fetchArticleComments,
+  insertComment,
 } = require("./models");
 
 const { req, res } = require("./app");
@@ -63,6 +64,16 @@ exports.getArticleComments = (req, res, next) => {
   fetchArticleComments(articleId)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.postComment = (req, res, next) => {
+  const comment = req.body;
+  const { articleId } = req.params;
+  insertComment(articleId, comment)
+    .then((userComment) => {
+      res.status(201).send(userComment);
     })
     .catch(next);
 };
