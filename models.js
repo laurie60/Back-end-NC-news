@@ -87,7 +87,7 @@ exports.fetchArticleComments = async (articleId) => {
   }
 
   const articleComments = await db.query(
-    `SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body
+    `SELECT comments.comment_id, comments.article_id, comments.votes, comments.created_at, comments.author, comments.body
 FROM comments
 LEFT JOIN articles 
 ON articles.article_id = comments.article_id 

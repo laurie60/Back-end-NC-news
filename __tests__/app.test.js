@@ -203,7 +203,7 @@ describe("News Express App", () => {
     });
   });
   describe("GET /api/articles/:article_id/comments", () => {
-    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+    test("200: responds with array of comment objects, each of which have comment_id, votes, created_at, author, article_id and body properties", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -217,6 +217,7 @@ describe("News Express App", () => {
             expect(comment).toHaveProperty("created_at");
             expect(comment).toHaveProperty("author");
             expect(comment).toHaveProperty("body");
+            expect(comment.article_id).toBe(1);
           });
         });
     });
@@ -236,6 +237,16 @@ describe("News Express App", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).toEqual([]);
+        });
+    });
+    test("Returns 400 with appropriate message if passed article id of invalid type", () => {
+      return request(app)
+        .get("/api/articles/bannans/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "invalid input type",
+          });
         });
     });
   });
