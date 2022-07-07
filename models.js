@@ -82,8 +82,6 @@ GROUP BY articles.article_id
 ORDER BY ${sort_by} DESC;`;
   }
 
-  console.log(order === "ASC");
-
   if (order) {
     if (order !== "ASC" && order !== "DESC") {
       return Promise.reject({
@@ -91,7 +89,6 @@ ORDER BY ${sort_by} DESC;`;
         msg: `${order} is not a valid order option`,
       });
     }
-    console.log(order);
     if (order === "ASC") {
       queryStr = `SELECT articles.*, COUNT(comments.article_id) 
 ::INT AS comment_count 
@@ -103,11 +100,8 @@ ORDER BY created_at ASC;`;
     }
   }
 
-  console.log(topic);
-
   if (topic) {
     const { rows } = await db.query("SELECT * FROM topics;");
-    console.log(rows);
     if (rows.filter((topics) => topics.slug === topic).length === 0) {
       return Promise.reject({
         status: 400,
@@ -126,8 +120,6 @@ ORDER BY created_at DESC;`;
   }
 
   const articlesArr = await db.query(queryStr, queryValues);
-
-  console.log(articlesArr.rows, "<<<<<rows");
 
   return articlesArr.rows;
 };
