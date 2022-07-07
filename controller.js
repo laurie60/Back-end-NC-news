@@ -52,11 +52,11 @@ exports.getArticles = (req, res) => {
   });
 };
 
-exports.getArticles = (req, res) => {
-  fetchArticles().then((articles) => {
-    res.status(200).send({ articles });
-  });
-};
+// exports.getArticles = (req, res, next) => {
+//   fetchArticles().then((articles) => {
+//     res.status(200).send({ articles });
+//   });
+// };
 
 exports.getArticleComments = (req, res, next) => {
   const { articleId } = req.params;

@@ -238,5 +238,15 @@ describe("News Express App", () => {
           expect(body.comments).toEqual([]);
         });
     });
+    test("Returns 400 with appropriate message if passed article id of invalid type", () => {
+      return request(app)
+        .get("/api/articles/bannans/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "invalid input type",
+          });
+        });
+    });
   });
 });
