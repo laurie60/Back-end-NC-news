@@ -186,8 +186,57 @@ describe("News Express App", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          console.log(body, "<<<<<<in test");
+          console.log(body);
           expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          expect(body.articles).toHaveLength(12);
+          body.articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("comment_count");
+          });
+        });
+    });
+    test.only("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the permitted sorted_by query (descending)", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(({ body }) => {
+          //console.log(body.articles, "<<<<<sorted by author");
+          expect(body.articles).toBeSortedBy("author", {
+            descending: true,
+          });
+          expect(body.articles).toHaveLength(12);
+          body.articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("comment_count");
+          });
+        });
+    });
+
+    test.only("400: responds with error message if invalid sort query is attempted", () => {
+      return request(app)
+        .get("/api/articles?sort_by=potato")
+        .expect(400)
+        .then(({ body }) => {
+          //console.log(body.articles, "<<<<<sorted by author");
+          expect(body).toEqual({ msg: "potato is not a valid sort option" });
+        });
+    });
+    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("author", {
             descending: true,
           });
           expect(body.articles).toHaveLength(12);
@@ -250,7 +299,7 @@ describe("News Express App", () => {
         });
     });
   });
-  describe.only("POST /api/articles/:article_id/comments", () => {
+  describe("POST /api/articles/:article_id/comments", () => {
     test("201:  object of the posted", () => {
       const comment = { icellusedkars: "Wagon Wheels" };
 

@@ -47,10 +47,16 @@ exports.getUsers = (req, res) => {
   });
 };
 
-exports.getArticles = (req, res) => {
-  fetchArticles().then((articles) => {
-    res.status(200).send({ articles });
-  });
+exports.getArticles = (req, res, next) => {
+  const { sort_by } = req.query;
+  const { order } = req.query;
+  const { topic } = req.query;
+  //console.log(topic, "<<<<<<<<<<<query");
+  fetchArticles(sort_by, order, topic)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
 };
 
 exports.getArticleComments = (req, res, next) => {
