@@ -47,10 +47,6 @@ exports.alterVotes = (articleId, inc_votes) => {
 };
 
 exports.fetchArticles = async (sort_by, order, topic) => {
-  // The end point should also accept the following queries:
-  // sort_by, which sorts the articles by any valid column (defaults to date)
-  // order, which can be set to asc or desc for ascending or descending (defaults to descending)
-  // topic, which filters the articles by the topic value specified in the query
   let queryStr = `SELECT articles.*, COUNT(comments.article_id) 
 ::INT AS comment_count 
 FROM articles 
@@ -70,8 +66,6 @@ ORDER BY created_at DESC;`;
   ];
   const queryValues = [];
 
-  console.log(sort_by, "<<<sort by");
-
   if (sort_by) {
     if (!columnNames.includes(sort_by)) {
       return Promise.reject({
@@ -88,15 +82,16 @@ GROUP BY articles.article_id
 ORDER BY ${sort_by} DESC;`;
   }
 
-  console.log(queryStr);
+  console.log(order === "ASC");
 
   if (order) {
-    if (order !== "ASC" || order !== "DESC") {
+    if (order !== "ASC" && order !== "DESC") {
       return Promise.reject({
         status: 400,
         msg: `${order} is not a valid order option`,
       });
     }
+    console.log(order);
     if (order === "ASC") {
       queryStr = `SELECT articles.*, COUNT(comments.article_id) 
 ::INT AS comment_count 
@@ -107,6 +102,8 @@ GROUP BY articles.article_id
 ORDER BY created_at ASC;`;
     }
   }
+
+  console.log(topic);
 
   if (topic) {
     const { rows } = await db.query("SELECT * FROM topics;");
@@ -124,11 +121,13 @@ LEFT JOIN comments
 ON articles.article_id = comments.article_id 
 WHERE articles.topic = $1
 GROUP BY articles.article_id
-ORDER BY created_at ASC;`;
+ORDER BY created_at DESC;`;
     queryValues.push(topic);
   }
 
   const articlesArr = await db.query(queryStr, queryValues);
+
+  console.log(articlesArr.rows, "<<<<<rows");
 
   return articlesArr.rows;
 };

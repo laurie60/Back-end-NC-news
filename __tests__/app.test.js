@@ -8,7 +8,7 @@ const sorted = require("jest-sorted");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe("News Express App", () => {
+describe(" GET endpoints News Express App", () => {
   describe("GET api/topics", () => {
     test("200: responds with array of objects, each of which have properties slug & description ", () => {
       return request(app)
@@ -201,12 +201,11 @@ describe("News Express App", () => {
           });
         });
     });
-    test.only("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the permitted sorted_by query (descending)", () => {
+    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by a permitted sorted_by query (descending)", () => {
       return request(app)
         .get("/api/articles?sort_by=author")
         .expect(200)
         .then(({ body }) => {
-          //console.log(body.articles, "<<<<<sorted by author");
           expect(body.articles).toBeSortedBy("author", {
             descending: true,
           });
@@ -222,23 +221,21 @@ describe("News Express App", () => {
         });
     });
 
-    test.only("400: responds with error message if invalid sort query is attempted", () => {
+    test("400: responds with error message if invalid sort query is attempted", () => {
       return request(app)
         .get("/api/articles?sort_by=potato")
         .expect(400)
         .then(({ body }) => {
-          //console.log(body.articles, "<<<<<sorted by author");
           expect(body).toEqual({ msg: "potato is not a valid sort option" });
         });
     });
-    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+
+    test.only("200: responds with array of article objects, sorted by the date created in ascending ascending if order ascending query is requested", () => {
       return request(app)
-        .get("/api/articles?topic=mitch")
+        .get("/api/articles?order=ASC")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles).toBeSortedBy("author", {
-            descending: true,
-          });
+          expect(body.articles).toBeSortedBy("created_at"); //ascending is default in jestSorted
           expect(body.articles).toHaveLength(12);
           body.articles.forEach((article) => {
             expect(article).toHaveProperty("author");
@@ -247,6 +244,44 @@ describe("News Express App", () => {
             expect(article).toHaveProperty("topic");
             expect(article).toHaveProperty("created_at");
             expect(article).toHaveProperty("comment_count");
+          });
+        });
+    });
+    test.only("400: responds with error message if invalid order query is attempted", () => {
+      return request(app)
+        .get("/api/articles?order=potato")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "potato is not a valid order option" });
+        });
+    });
+
+    test.only("200: responds with array of article objects of specified topic if valid topic is requested ", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          expect(body.articles).toHaveLength(11);
+          body.articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("comment_count");
+          });
+        });
+    });
+    test.only("400: responds with error message if invalid order query is attempted", () => {
+      return request(app)
+        .get("/api/articles?topic=potato")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "potato is not a valid topic",
           });
         });
     });
