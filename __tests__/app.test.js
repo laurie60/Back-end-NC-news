@@ -203,7 +203,7 @@ describe("News Express App", () => {
     });
   });
   describe.only("GET /api/articles/:article_id/comments", () => {
-    test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
+    test("200: responds with array of comment objects, each of which have comment_id, votes, created_at, author, and body properties", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
