@@ -149,8 +149,16 @@ WHERE articles.article_id = $1;`,
 };
 
 exports.insertComment = async (articleId, comment) => {
-  const username = Object.keys(comment)[0];
-  const commentBody = comment[username];
+  const username = comment.username;
+  const commentBody = comment.body;
+
+  if (!username || !commentBody) {
+    return Promise.reject({
+      status: 400,
+      msg: `Please provide username and comment`,
+    });
+  }
+
   const articleCheck = await db.query(
     `SELECT * FROM articles where article_id = $1;`,
     [articleId]
