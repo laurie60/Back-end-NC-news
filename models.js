@@ -196,5 +196,5 @@ exports.removeComment = async (commentId) => {
     [commentId]
   );
 
-  return deleted.rows[0];
+  return;
 };

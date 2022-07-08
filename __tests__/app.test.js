@@ -394,9 +394,6 @@ describe.only("DELETE /api/comments/:comment_id", () => {
     return request(app)
       .delete("/api/comments/1")
       .expect(204)
-      .then(({ body }) => {
-        expect(body).toEqual({});
-      })
       .then(() => {
         //the comment with comment id 1 is on article 9, which had 2 comments, so the comment count should equlal 1 after deletion.
         return request(app)
