@@ -97,3 +97,42 @@ WHERE articles.article_id = $1;`,
 
   return articleComments.rows;
 };
+
+exports.insertComment = async (articleId, comment) => {
+  const username = comment.username;
+  const commentBody = comment.body;
+
+  if (!username || !commentBody) {
+    return Promise.reject({
+      status: 400,
+      msg: `Please provide username and comment`,
+    });
+  }
+
+  const articleCheck = await db.query(
+    `SELECT * FROM articles where article_id = $1;`,
+    [articleId]
+  );
+  if (articleCheck.rowCount === 0) {
+    return Promise.reject({
+      status: 404,
+      msg: `No article found with article ID: ${articleId}`,
+    });
+  }
+  const UserCheck = await db.query(`SELECT * FROM users where username = $1;`, [
+    username,
+  ]);
+  if (UserCheck.rowCount === 0) {
+    return Promise.reject({
+      status: 404,
+      msg: `No user found with username: ${username}`,
+    });
+  }
+
+  const postComment = await db.query(
+    `INSERT INTO comments ( article_id, votes, created_at, author, body ) VALUES ($1, 0, now(), $2, $3) RETURNING body;`,
+    [articleId, username, commentBody]
+  );
+
+  return postComment.rows[0];
+};

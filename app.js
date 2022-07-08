@@ -6,6 +6,7 @@ const {
   getUsers,
   getArticles,
   getArticleComments,
+  postComment,
 } = require("./controller");
 
 const app = express();
@@ -23,6 +24,8 @@ app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:articleId/comments", getArticleComments);
+
+app.post("/api/articles/:articleId/comments", postComment);
 
 app.use((err, req, res, next) => {
   // handle custom errors

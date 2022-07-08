@@ -250,4 +250,74 @@ describe("News Express App", () => {
         });
     });
   });
+  describe.only("POST /api/articles/:article_id/comments", () => {
+    test("201:  object of the posted", () => {
+      const comment = { username: "icellusedkars", body: "Wagon Wheels" };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body).toEqual({ body: "Wagon Wheels" });
+        });
+    });
+    test("404: when an article id is requested that does not exist, responds with a 404 error and an appropriate message", () => {
+      const comment = { username: "icellusedkars", body: "Wagon Wheels" };
+
+      return request(app)
+        .post("/api/articles/188/comments")
+        .send(comment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: "No article found with article ID: 188",
+          });
+        });
+    });
+    test("404: when comment is posted with author whose username is not in the users table, responds with an appropriate error message ", () => {
+      const comment = {
+        username: "questioningmyexistance",
+        body: "Wagon Wheels",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: `No user found with username: questioningmyexistance`,
+          });
+        });
+    });
+
+    test("400: if invalid id of invalid type is requested, responds with appropriate message ", () => {
+      const comment = { username: "icellusedkars", body: "Wagon Wheels" };
+
+      return request(app)
+        .post("/api/articles/potato/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: `invalid input type`,
+          });
+        });
+    });
+
+    test("400: with comment of invalid input type if input is missing username ", () => {
+      const comment = { body: "Wagon Wheels" };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            msg: `Please provide username and comment`,
+          });
+        });
+    });
+  });
 });
