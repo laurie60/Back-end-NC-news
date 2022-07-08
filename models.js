@@ -190,7 +190,13 @@ exports.removeComment = async (commentId) => {
       msg: `No comment found with comment id: ${commentId}`,
     });
   }
-  "DELETE FROM comments WHERE comment_id=$1 RETURNING *;", [comment_id];
 
-  return removeComment.rows[0];
+  const deleted = await db.query(
+    "DELETE FROM comments WHERE comment_id=$1 RETURNING *;",
+    [commentId]
+  );
+
+  console.log(deleted.rows[0]);
+
+  return deleted.rows[0];
 };

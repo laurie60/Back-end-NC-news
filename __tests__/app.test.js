@@ -35,7 +35,7 @@ describe(" GET endpoints News Express App", () => {
   });
 
   describe("GET /api/articles/:article_id", () => {
-    test("200: responds with array containing object of specified article, and the number of comments that are associated with the article id  ", () => {
+    test.only("200: responds with array containing object of specified article, and the number of comments that are associated with the article id  ", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -230,7 +230,7 @@ describe(" GET endpoints News Express App", () => {
         });
     });
 
-    test.only("200: responds with array of article objects, sorted by the date created in ascending ascending if order ascending query is requested", () => {
+    test("200: responds with array of article objects, sorted by the date created in ascending ascending if order ascending query is requested", () => {
       return request(app)
         .get("/api/articles?order=ASC")
         .expect(200)
@@ -247,7 +247,7 @@ describe(" GET endpoints News Express App", () => {
           });
         });
     });
-    test.only("400: responds with error message if invalid order query is attempted", () => {
+    test("400: responds with error message if invalid order query is attempted", () => {
       return request(app)
         .get("/api/articles?order=potato")
         .expect(400)
@@ -256,7 +256,7 @@ describe(" GET endpoints News Express App", () => {
         });
     });
 
-    test.only("200: responds with array of article objects of specified topic if valid topic is requested ", () => {
+    test("200: responds with array of article objects of specified topic if valid topic is requested ", () => {
       return request(app)
         .get("/api/articles?topic=mitch")
         .expect(200)
@@ -275,7 +275,7 @@ describe(" GET endpoints News Express App", () => {
           });
         });
     });
-    test.only("400: responds with error message if invalid order query is attempted", () => {
+    test("400: responds with error message if invalid order query is attempted", () => {
       return request(app)
         .get("/api/articles?topic=potato")
         .expect(400)
@@ -389,9 +389,44 @@ describe(" GET endpoints News Express App", () => {
   });
 });
 
-// prettier-ignore
-describe("DELETE /api/comments/:comment_id", () => {
-  test("204:  object of the posted", () => {
-    return request(app).delete("/api/comments/1").expect(204);
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes requested comment,", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      })
+      .then(() => {
+        //the comment with comment id 1 is on article 9, which had 2 comments, so the comment count should equlal 1 after deletion.
+        return request(app)
+          .get("/api/articles/9")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article).toEqual(
+              expect.objectContaining({
+                comment_count: 1,
+              })
+            );
+          });
+      });
+  });
+  test("404: if non existent comment id is requested for deletion responds with appropriate message ", () => {
+    return request(app)
+      .delete("/api/comments/9001")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "No comment found with comment id: 9001" });
+      });
+  });
+  test("400: if comment id of invalid type is requested for deletion, responds with appropriate error message ", () => {
+    return request(app)
+      .delete("/api/comments/potato")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: `invalid input type`,
+        });
+      });
   });
 });

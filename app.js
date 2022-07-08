@@ -28,7 +28,7 @@ app.get("/api/articles/:articleId/comments", getArticleComments);
 
 app.post("/api/articles/:articleId/comments", postComment);
 
-app.delete("/delete/comment/:comment_id", deleteComment);
+app.delete("/api/comments/:commentId", deleteComment);
 
 app.use((err, req, res, next) => {
   // handle custom errors
