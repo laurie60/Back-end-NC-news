@@ -196,7 +196,5 @@ exports.removeComment = async (commentId) => {
     [commentId]
   );
 
-  console.log(deleted.rows[0]);
-
   return deleted.rows[0];
 };

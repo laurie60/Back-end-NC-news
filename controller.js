@@ -80,10 +80,7 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.deleteComment = (req, res, next) => {
-  console.log("in controller");
-
   const { commentId } = req.params;
-  console.log(commentId, "comment id");
   removeComment(commentId)
     .then(() => {
       res.status(204).send({});
