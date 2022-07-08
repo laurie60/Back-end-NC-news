@@ -186,3 +186,23 @@ exports.insertComment = async (articleId, comment) => {
 
   return postComment.rows[0];
 };
+
+exports.removeComment = async (commentId) => {
+  const commentCheck = await db.query(
+    `SELECT * FROM comments where comment_id = $1;`,
+    [commentId]
+  );
+  if (commentCheck.rowCount === 0) {
+    return Promise.reject({
+      status: 404,
+      msg: `No comment found with comment id: ${commentId}`,
+    });
+  }
+
+  const deleted = await db.query(
+    "DELETE FROM comments WHERE comment_id=$1 RETURNING *;",
+    [commentId]
+  );
+
+  return;
+};

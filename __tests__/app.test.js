@@ -35,7 +35,7 @@ describe(" GET endpoints News Express App", () => {
   });
 
   describe("GET /api/articles/:article_id", () => {
-    test("200: responds with array containing object of specified article, and the number of comments that are associated with the article id  ", () => {
+    test.only("200: responds with array containing object of specified article, and the number of comments that are associated with the article id  ", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -399,6 +399,45 @@ describe("POST /api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         expect(body).toEqual({
           msg: `Please provide username and comment`,
+        });
+      });
+  });
+});
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes requested comment,", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(() => {
+        //the comment with comment id 1 is on article 9, which had 2 comments, so the comment count should equlal 1 after deletion.
+        return request(app)
+          .get("/api/articles/9")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article).toEqual(
+              expect.objectContaining({
+                comment_count: 1,
+              })
+            );
+          });
+      });
+  });
+  test("404: if non existent comment id is requested for deletion responds with appropriate message ", () => {
+    return request(app)
+      .delete("/api/comments/9001")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "No comment found with comment id: 9001" });
+      });
+  });
+  test("400: if comment id of invalid type is requested for deletion, responds with appropriate error message ", () => {
+    return request(app)
+      .delete("/api/comments/potato")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: `invalid input type`,
         });
       });
   });

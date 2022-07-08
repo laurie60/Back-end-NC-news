@@ -6,6 +6,7 @@ const {
   fetchArticles,
   fetchArticleComments,
   insertComment,
+  removeComment,
 } = require("./models");
 
 const { req, res } = require("./app");
@@ -72,6 +73,15 @@ exports.postComment = (req, res, next) => {
   insertComment(articleId, comment)
     .then((userComment) => {
       res.status(201).send(userComment);
+    })
+    .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { commentId } = req.params;
+  removeComment(commentId)
+    .then(() => {
+      res.status(204).send({});
     })
     .catch(next);
 };
