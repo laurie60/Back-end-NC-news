@@ -7,6 +7,7 @@ const {
   getArticles,
   getArticleComments,
   postComment,
+  deleteComment,
 } = require("./controller");
 
 const app = express();
@@ -26,6 +27,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:articleId/comments", getArticleComments);
 
 app.post("/api/articles/:articleId/comments", postComment);
+
+app.delete("/delete/comment/:comment_id", deleteComment);
 
 app.use((err, req, res, next) => {
   // handle custom errors

@@ -392,9 +392,6 @@ describe(" GET endpoints News Express App", () => {
 // prettier-ignore
 describe("DELETE /api/comments/:comment_id", () => {
   test("204:  object of the posted", () => {
-
-    return request(app)
-      .delete("/api/comments/1")
-      .expect(204)
+    return request(app).delete("/api/comments/1").expect(204);
   });
 });
