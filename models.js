@@ -46,32 +46,82 @@ exports.alterVotes = (articleId, inc_votes) => {
   });
 };
 
-exports.fetchArticles = async () => {
-  const commentCountArr = await db.query(
-    `SELECT articles.*, COUNT(comments.article_id) 
+exports.fetchArticles = async (sort_by, order, topic) => {
+  let queryStr = `SELECT articles.*, COUNT(comments.article_id) 
 ::INT AS comment_count 
 FROM articles 
 LEFT JOIN comments 
 ON articles.article_id = comments.article_id 
 GROUP BY articles.article_id
-ORDER BY created_at DESC;`
-  );
+ORDER BY created_at DESC;`;
+  const columnNames = [
+    "comment_count",
+    "votes",
+    "created_at",
+    "body",
+    "author",
+    "topic",
+    "title",
+    "article_id",
+  ];
+  const queryValues = [];
 
-  return commentCountArr.rows;
-};
-
-exports.fetchArticles = async () => {
-  const commentCountArr = await db.query(
-    `SELECT articles.*, COUNT(comments.article_id) 
+  if (sort_by) {
+    if (!columnNames.includes(sort_by)) {
+      return Promise.reject({
+        status: 400,
+        msg: `${sort_by} is not a valid sort option`,
+      });
+    }
+    queryStr = `SELECT articles.*, COUNT(comments.article_id) 
 ::INT AS comment_count 
 FROM articles 
 LEFT JOIN comments 
 ON articles.article_id = comments.article_id 
 GROUP BY articles.article_id
-ORDER BY created_at DESC;`
-  );
+ORDER BY ${sort_by} DESC;`;
+  }
 
-  return commentCountArr.rows;
+  if (order) {
+    if (order !== "ASC" && order !== "DESC") {
+      return Promise.reject({
+        status: 400,
+        msg: `${order} is not a valid order option`,
+      });
+    }
+    if (order === "ASC") {
+      queryStr = `SELECT articles.*, COUNT(comments.article_id) 
+::INT AS comment_count 
+FROM articles 
+LEFT JOIN comments 
+ON articles.article_id = comments.article_id 
+GROUP BY articles.article_id
+ORDER BY created_at ASC;`;
+    }
+  }
+
+  if (topic) {
+    const { rows } = await db.query("SELECT * FROM topics;");
+    if (rows.filter((topics) => topics.slug === topic).length === 0) {
+      return Promise.reject({
+        status: 400,
+        msg: `${topic} is not a valid topic`,
+      });
+    }
+    queryStr = `SELECT articles.*, COUNT(comments.article_id) 
+::INT AS comment_count 
+FROM articles 
+LEFT JOIN comments 
+ON articles.article_id = comments.article_id 
+WHERE articles.topic = $1
+GROUP BY articles.article_id
+ORDER BY created_at DESC;`;
+    queryValues.push(topic);
+  }
+
+  const articlesArr = await db.query(queryStr, queryValues);
+
+  return articlesArr.rows;
 };
 
 exports.fetchArticleComments = async (articleId) => {
