@@ -180,13 +180,12 @@ describe(" GET endpoints News Express App", () => {
         });
     });
   });
-  describe("GET api/articles", () => {
+  describe.only("GET api/articles", () => {
     test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body.articles).toBeSortedBy("created_at", {
             descending: true,
           });
@@ -230,7 +229,7 @@ describe(" GET endpoints News Express App", () => {
         });
     });
 
-    test.only("200: responds with array of article objects, sorted by the date created in ascending ascending if order ascending query is requested", () => {
+    test("200: responds with array of article objects, sorted by the date created in ascending ascending if order ascending query is requested", () => {
       return request(app)
         .get("/api/articles?order=ASC")
         .expect(200)
@@ -247,7 +246,7 @@ describe(" GET endpoints News Express App", () => {
           });
         });
     });
-    test.only("400: responds with error message if invalid order query is attempted", () => {
+    test("400: responds with error message if invalid order query is attempted", () => {
       return request(app)
         .get("/api/articles?order=potato")
         .expect(400)
@@ -256,7 +255,7 @@ describe(" GET endpoints News Express App", () => {
         });
     });
 
-    test.only("200: responds with array of article objects of specified topic if valid topic is requested ", () => {
+    test("200: responds with array of article objects of specified topic if valid topic is requested ", () => {
       return request(app)
         .get("/api/articles?topic=mitch")
         .expect(200)
@@ -275,7 +274,7 @@ describe(" GET endpoints News Express App", () => {
           });
         });
     });
-    test.only("400: responds with error message if invalid order query is attempted", () => {
+    test("400: responds with error message if invalid order query is attempted", () => {
       return request(app)
         .get("/api/articles?topic=potato")
         .expect(400)
@@ -286,6 +285,7 @@ describe(" GET endpoints News Express App", () => {
         });
     });
   });
+
   describe("GET /api/articles/:article_id/comments", () => {
     test("200: responds with array of comment objects, each of which have comment_id, votes, created_at, author, article_id and body properties", () => {
       return request(app)
