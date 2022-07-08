@@ -49,9 +49,7 @@ exports.getUsers = (req, res) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { sort_by } = req.query;
-  const { order } = req.query;
-  const { topic } = req.query;
+  const { sort_by, order, topic } = req.query;
   //console.log(topic, "<<<<<<<<<<<query");
   fetchArticles(sort_by, order, topic)
     .then((articles) => {

@@ -180,13 +180,12 @@ describe(" GET endpoints News Express App", () => {
         });
     });
   });
-  describe("GET api/articles", () => {
+  describe.only("GET api/articles", () => {
     test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body.articles).toBeSortedBy("created_at", {
             descending: true,
           });
@@ -209,15 +208,6 @@ describe(" GET endpoints News Express App", () => {
           expect(body.articles).toBeSortedBy("author", {
             descending: true,
           });
-          expect(body.articles).toHaveLength(12);
-          body.articles.forEach((article) => {
-            expect(article).toHaveProperty("author");
-            expect(article).toHaveProperty("title");
-            expect(article).toHaveProperty("article_id");
-            expect(article).toHaveProperty("topic");
-            expect(article).toHaveProperty("created_at");
-            expect(article).toHaveProperty("comment_count");
-          });
         });
     });
 
@@ -236,17 +226,9 @@ describe(" GET endpoints News Express App", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).toBeSortedBy("created_at"); //ascending is default in jestSorted
-          expect(body.articles).toHaveLength(12);
-          body.articles.forEach((article) => {
-            expect(article).toHaveProperty("author");
-            expect(article).toHaveProperty("title");
-            expect(article).toHaveProperty("article_id");
-            expect(article).toHaveProperty("topic");
-            expect(article).toHaveProperty("created_at");
-            expect(article).toHaveProperty("comment_count");
-          });
         });
     });
+
     test("400: responds with error message if invalid order query is attempted", () => {
       return request(app)
         .get("/api/articles?order=potato")
@@ -266,12 +248,7 @@ describe(" GET endpoints News Express App", () => {
           });
           expect(body.articles).toHaveLength(11);
           body.articles.forEach((article) => {
-            expect(article).toHaveProperty("author");
-            expect(article).toHaveProperty("title");
-            expect(article).toHaveProperty("article_id");
-            expect(article).toHaveProperty("topic");
-            expect(article).toHaveProperty("created_at");
-            expect(article).toHaveProperty("comment_count");
+            expect(article.topic).toEqual("mitch");
           });
         });
     });
@@ -285,107 +262,145 @@ describe(" GET endpoints News Express App", () => {
           });
         });
     });
-  });
-  describe("GET /api/articles/:article_id/comments", () => {
-    test("200: responds with array of comment objects, each of which have comment_id, votes, created_at, author, article_id and body properties", () => {
-      return request(app)
-        .get("/api/articles/1/comments")
-        .expect(200)
-        .then(({ body }) => {
-          console.log(body.comments, "<<<<<<in test");
 
-          expect(body.comments).toHaveLength(11);
-          body.comments.forEach((comment) => {
-            expect(comment).toHaveProperty("comment_id");
-            expect(comment).toHaveProperty("votes");
-            expect(comment).toHaveProperty("created_at");
-            expect(comment).toHaveProperty("author");
-            expect(comment).toHaveProperty("body");
-            expect(comment.article_id).toBe(1);
-          });
-        });
-    });
-    test("Returns 404 if there is no article_id corresponding to the one requested", () => {
+    test("200: if a query is attempted with  a query tem that does not exist, the query term will be ignored", () => {
       return request(app)
-        .get("/api/articles/1000/comments")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            msg: "No article found with article ID: 1000",
-          });
-        });
-    });
-    test("Returns 200 with empty comments array if passed an article ID which has no comments associated with it", () => {
-      return request(app)
-        .get("/api/articles/2/comments")
+        .get("/api/articles?potato=author")
         .expect(200)
         .then(({ body }) => {
-          expect(body.comments).toEqual([]);
-        });
-    });
-    test("Returns 400 with appropriate message if passed article id of invalid type", () => {
-      return request(app)
-        .get("/api/articles/bannans/comments")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            msg: "invalid input type",
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          expect(body.articles).toHaveLength(12); // returns the same as if /api/articles was requested (query term was ignored)
+          body.articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("comment_count");
           });
         });
     });
   });
-  describe("POST /api/articles/:article_id/comments", () => {
-    test("201:  object of the posted", () => {
-      const comment = { icellusedkars: "Wagon Wheels" };
+});
 
-      return request(app)
-        .post("/api/articles/1/comments")
-        .send(comment)
-        .expect(201)
-        .then(({ body }) => {
-          expect(body).toEqual({ body: "Wagon Wheels" });
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with array of comment objects, each of which have comment_id, votes, created_at, author, article_id and body properties", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body.comments, "<<<<<<in test");
+
+        expect(body.comments).toHaveLength(11);
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+          expect(comment.article_id).toBe(1);
         });
-    });
-    test("404: when an article id is requested that does not exist, responds with a 404 error and an appropriate message", () => {
-      const comment = { icellusedkars: "Wagon Wheels" };
-
-      return request(app)
-        .post("/api/articles/188/comments")
-        .send(comment)
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            msg: "No article found with article ID: 188",
-          });
+      });
+  });
+  test("Returns 404 if there is no article_id corresponding to the one requested", () => {
+    return request(app)
+      .get("/api/articles/1000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "No article found with article ID: 1000",
         });
-    });
-    test("404: when comment is posted with author whose username is not in the users table, responds with an appropriate error message ", () => {
-      const comment = { questioningmyexistance: "Wagon Wheels" };
-
-      return request(app)
-        .post("/api/articles/1/comments")
-        .send(comment)
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            msg: `No user found with username: questioningmyexistance`,
-          });
+      });
+  });
+  test("Returns 200 with empty comments array if passed an article ID which has no comments associated with it", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+  test("Returns 400 with appropriate message if passed article id of invalid type", () => {
+    return request(app)
+      .get("/api/articles/bannans/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "invalid input type",
         });
-    });
+      });
+  });
+});
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201:  object of the posted", () => {
+    const comment = { username: "icellusedkars", body: "Wagon Wheels" };
 
-    test("400: if invalid id of invalid type is requested, responds with appropriate message ", () => {
-      const comment = { questioningmyexistance: "Wagon Wheels" };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toEqual({ body: "Wagon Wheels" });
+      });
+  });
+  test("404: when an article id is requested that does not exist, responds with a 404 error and an appropriate message", () => {
+    const comment = { username: "icellusedkars", body: "Wagon Wheels" };
 
-      return request(app)
-        .post("/api/articles/potato/comments")
-        .send(comment)
-        .expect(400)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            msg: `invalid input type`,
-          });
+    return request(app)
+      .post("/api/articles/188/comments")
+      .send(comment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "No article found with article ID: 188",
         });
-    });
+      });
+  });
+  test("404: when comment is posted with author whose username is not in the users table, responds with an appropriate error message ", () => {
+    const comment = {
+      username: "questioningmyexistance",
+      body: "Wagon Wheels",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: `No user found with username: questioningmyexistance`,
+        });
+      });
+  });
+
+  test("400: if invalid id of invalid type is requested, responds with appropriate message ", () => {
+    const comment = { username: "icellusedkars", body: "Wagon Wheels" };
+
+    return request(app)
+      .post("/api/articles/potato/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: `invalid input type`,
+        });
+      });
+  });
+
+  test("400: with comment of invalid input type if input is missing username ", () => {
+    const comment = { body: "Wagon Wheels" };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: `Please provide username and comment`,
+        });
+      });
   });
 });
 
