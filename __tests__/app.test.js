@@ -334,7 +334,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 describe("POST /api/articles/:article_id/comments", () => {
-  test("201:  object of the posted", () => {
+  test("201:  object of the posted comment when valid username and comment supplied", () => {
     const comment = { username: "icellusedkars", body: "Wagon Wheels" };
 
     return request(app)
