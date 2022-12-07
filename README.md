@@ -55,7 +55,6 @@ To run tests use:
 ```
 npm test
 ```
-=======
 
 The API responds to different endpoints ([listed here](https://be-news.cyclic.app/api)) which variously Get, Patch, Post and Delete the information in the database.
 
