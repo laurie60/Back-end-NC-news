@@ -38,7 +38,7 @@ Add a `.development.env` file which contains the following:
   password: 'YOUR_POSTGRES_PASSWORD'
 ```
 
-If you are on mac, the password variable is not required. The `.development.env` will be `.gitigored` automatically.
+If you are on a mac, the password variable is not required. The `.development.env` file will be `.gitigored` automatically.
 
 No we are ready to start and seed the database using the following commands:
 
