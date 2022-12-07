@@ -10,6 +10,8 @@ const {
   getArticleComments,
   postComment,
   deleteComment,
+  root,
+  paths,
 } = require("./controller");
 
 const app = express();
@@ -17,6 +19,10 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+
+app.get("/", root);
+
+app.get("/api", paths);
 
 app.get("/api/topics", getTopics);
 

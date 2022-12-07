@@ -4,11 +4,35 @@ const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app");
 const sorted = require("jest-sorted");
+const fs = require("fs");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe(" GET endpoints News Express App", () => {
+describe("GET endpoints News Express App", () => {
+  describe("/", () => {
+    test("GET /", () => {
+      return request(app)
+        .get("/")
+        .expect(200)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual(
+            "Welcome to the NC-news API, go to the /api endpoint for a list of all available endpoints and methods."
+          );
+        });
+    });
+  });
+  describe.only("/api", () => {
+    test("GET /api", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ text }) => {
+          const endpoints = fs.readFileSync(`./endpoints.json`, "utf-8");
+          expect(text).toEqual(endpoints);
+        });
+    });
+  });
   describe("GET api/topics", () => {
     test("200: responds with array of objects, each of which have properties slug & description ", () => {
       return request(app)
@@ -35,7 +59,7 @@ describe(" GET endpoints News Express App", () => {
   });
 
   describe("GET /api/articles/:article_id", () => {
-    test.only("200: responds with array containing object of specified article, and the number of comments that are associated with the article id  ", () => {
+    test("200: responds with array containing object of specified article, and the number of comments that are associated with the article id  ", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -180,7 +204,7 @@ describe(" GET endpoints News Express App", () => {
         });
     });
   });
-  describe.only("GET api/articles", () => {
+  describe("GET api/articles", () => {
     test("200: responds with array of article objects, each of which have author, title, article_id, topic, created_at, votes, comment_count, sorted by the date created (descending)", () => {
       return request(app)
         .get("/api/articles")
@@ -404,7 +428,7 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: deletes requested comment,", () => {
     return request(app)
       .delete("/api/comments/1")

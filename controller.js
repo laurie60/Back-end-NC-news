@@ -9,7 +9,24 @@ const {
   removeComment,
 } = require("./models");
 
+const fs = require("fs");
+
 const { req, res } = require("./app");
+
+exports.root = (req, res) => {
+  res.status(200).send({
+    msg: "Welcome to the NC-news API, go to the /api endpoint for a list of all available endpoints and methods.",
+  });
+};
+
+exports.paths = (req, res, next) => {
+  fs.promises
+    .readFile(`./endpoints.json`, "utf-8")
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch(next);
+};
 
 exports.getTopics = (req, res) => {
   fetchTopics().then((responses) => {
@@ -19,7 +36,6 @@ exports.getTopics = (req, res) => {
 
 exports.getArticleById = (req, res, next) => {
   const { articleId } = req.params;
-
   fetchArticleById(articleId)
     .then((article) => {
       res.status(200).send({ article });
