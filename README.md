@@ -99,8 +99,8 @@ npm test
 
 ## Built with
 
-Node
-Express 
-Jest
-Supertest 
+- Node
+- Express 
+- Jest
+- Supertest 
 
