@@ -97,3 +97,10 @@ To run tests use:
 npm test
 ```
 
+## Built with
+
+Node
+Express 
+Jest
+Supertest 
+
