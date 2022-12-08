@@ -16,150 +16,135 @@
       ]
     }
   },
-  "POST /api/categories": {
-    "description": "Allows user to add a new category, must be unique",
-    "queries": [],
-    "exampleResponse": {
-      "slug": "roleplaying",
-      "description": "Games with traditional RPG elements, such as gaining XP, combat, and trade with NPCs and other players"
-    }
-  },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
-    "queries": ["category", "sort_by", "order", "limit", "p"],
+    "description": "serves an array of all topics",
+    "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
-      "reviews": [
+      "articles": [
         {
-          "review_id": 5,
-          "title": "One Night Ultimate Werewolf",
-          "designer": "Akihisa Okui",
-          "owner": "happyamy2016",
-          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          "category": "hidden-roles",
-          "created_at": 1610964101251,
-          "votes": 5,
-          "comment_count": 10
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": 1527695953341,
+          "article_id": 18,
+          "votes": 4,
+          "comment_count": 1
         }
       ]
     }
   },
-  "GET /api/reviews/:review_id": {
-    "description": "serves a review object",
+  "GET /api/articles/:article_id": {
+    "description": "serves up an article containing information on article matching article_id",
     "queries": [],
     "exampleResponse": {
-      "review_id": 1,
-      "title": "Agricola",
-      "designer": "Uwe Rosenberg",
-      "owner": "mallionaire",
-      "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-      "review_body": "Farmyard fun!",
-      "category": "euro game",
-      "created_at": "2021-01-18T10:00:20.514Z",
-      "votes": 1,
-      "comment_count": 0
+      "article": {
+        "title": "Barbara Streisand wins Grammy; thanks Mitch in speech",
+        "topic": "celebrity",
+        "author": "weegembump",
+        "body": "This is an article...",
+        "created_at": 1527695955691,
+        "article_id": 23,
+        "votes": 105,
+        "comment_count": 17
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "increments the votes on an article by a given amount and serves up updated article",
+    "queries": [],
+    "exampleRequest": { "inc_votes": 1 },
+    "exampleResponse": {
+      "article": {
+        "title": "Barbara Streisand wins Grammy; thanks Mitch in speech",
+        "topic": "celebrity",
+        "author": "weegembump",
+        "body": "This is an article...",
+        "created_at": 1527695955691,
+        "article_id": 23,
+        "votes": 106,
+        "comment_count": 17
+      }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "creates a comment with body & username sent on the request and serves the posted comment",
+    "queries": [],
+    "exampleRequest": {
+      "username": "butter_bridge",
+      "body": "This Mitch guy really knows what's up."
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 5,
+        "votes": 0,
+        "created_at": 1527695955692,
+        "author": "butter_bridge",
+        "body": "This Mitch guy really knows what's up."
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves all comments posted on article matching article_id",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 5,
+          "votes": 0,
+          "created_at": 1527695955692,
+          "author": "butter_bridge",
+          "body": "This Mitch guy really knows what's up."
+        }
+      ]
     }
   },
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": [],
-    "exampleResponse": [
-      {
-        "review_id": 2,
-        "title": "Jenga",
-        "designer": "Leslie Scott",
-        "owner": "philippaclaire9",
-        "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-        "review_body": "Fiddly fun for all the family",
-        "category": "dexterity",
-        "created_at": "2021-01-18T10:01:41.251Z",
-        "votes": 15
-      }
-    ]
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        }
+      ]
+    }
   },
   "GET /api/users/:username": {
-    "description": "serves a user object",
+    "description": "serves an object of user data with matching username",
     "queries": [],
     "exampleResponse": {
-      "username": "dav3rid",
-      "name": "dave",
-      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
-    }
-  },
-  "GET /api/reviews/:review_id/comments": {
-    "description": "serves all comments on a single review",
-    "queries": [],
-    "exampleResponse": {
-      "comment_id": 21,
-      "votes": 4,
-      "created_at": "2021-01-18T10:01:41.251Z",
-      "author": "Chun Li",
-      "body": "This is an example of a comment",
-      "review_id": 9
-    }
-  },
-  "PATCH /api/reviews/:review_id": {
-    "description": "updates comment in database with request body, returns updated comment",
-    "queries": [],
-    "exampleResponse": {
-      "review_id": 2,
-      "title": "Jenga",
-      "designer": "Leslie Scott",
-      "owner": "philippaclaire9",
-      "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-      "review_body": "Fiddly fun for all the family",
-      "category": "dexterity",
-      "created_at": "2021-01-18T10:01:41.251Z",
-      "votes": 15
-    }
-  },
-  "POST /api/reviews": {
-    "description": "Posts a new review",
-    "queries": [],
-    "exampleResponse": {
-      "review_id": 3,
-      "title": "Occaecat consequat officia in quis commodo.",
-      "designer": "Ollie Tabooger",
-      "owner": "mallionaire",
-      "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-      "review_body": "Lorem ipsum has never been so lorem ip-fun!",
-      "category": "euro game",
-      "created_at": "2021-01-18T10:01:41.251Z",
-      "votes": 0,
-      "comment_count": 0
-    }
-  },
-  "POST /api/reviews/:review_id/comments": {
-    "description": "Posts a new comment on the specified review",
-    "queries": [],
-    "exampleResponse": {
-      "comment_id": 7,
-      "votes": 0,
-      "created_at": "2021-01-18T10:01:41.251Z",
-      "author": "bainesface",
-      "body": "Yes it certainly is one of the games ever",
-      "review_id": 1
+      "user": {
+        "username": "YeetyMcYeet",
+        "avatar_url": "https://i.kym-cdn.com/entries/icons/original/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.png",
+        "name": "Sara"
+      }
     }
   },
   "PATCH /api/comments/:comment_id": {
-    "description": "updates comment in database with request body, returns updated comment",
+    "description": "increments the votes on a comment by a given amount and serves up updated comment",
     "queries": [],
+    "exampleRequest": {
+      "inc_votes": 4
+    },
     "exampleResponse": {
-      "comment_id": 2,
-      "body": "My dog loved this game too!",
-      "votes": 16,
-      "author": "mallionaire",
-      "review_id": 3,
-      "created_at": "2021-01-18T10:09:05.410Z"
+      "comment": {
+        "comment_id": 5,
+        "votes": 4,
+        "created_at": 1527695955692,
+        "author": "butter_bridge",
+        "body": "This Mitch guy really knows what's up."
+      }
     }
   },
-  "DELETE /api/reviews/:review_id": {
-    "description": "Removes a specific review, and all associated comments, from the database",
-    "queries": [],
-    "exampleResponse": "204, no response"
-  },
-  "DELETE /api/comments/:comment_id": {
-    "description": "Removes a specific comment from the database",
-    "queries": [],
-    "exampleResponse": "204, no response"
+  "DELETE /api/comments/comment_id": {
+    "description": "removes the comment matching comment_id and serves up no content",
+    "queries": []
   }
 }
